@@ -18,10 +18,11 @@ terraform {
 provider "aws" {}
 
 resource "aws_s3_bucket" "janice-zhong-bucket" {
-  bucket = "janice-zhong-1234"
+  bucket = "janice-zhong"
 
   tags = {
-    Name = "Janice Zhong Resume"
+    Name    = "Janice Zhong Resume"
+    Project = "janice-zhong-resume"
   }
 }
 
@@ -66,5 +67,70 @@ resource "aws_s3_bucket_website_configuration" "janice-zhong-website" {
 
   error_document {
     key = "404.html"
+  }
+}
+
+
+module "cloudfront" {
+  source  = "terraform-aws-modules/cloudfront/aws"
+  version = "6.2.0"
+
+
+  aliases = ["janice-zhong.com"]
+  #   comment = "My awesome CloudFront"
+
+  origin_access_control = {
+    s3_oac = {
+      description      = "CloudFront access to S3"
+      origin_type      = "s3"
+      signing_behavior = "always"
+      signing_protocol = "sigv4"
+    }
+  }
+
+  # TODO: set up an s3 bucket for cloudfront logs
+  #   logging_config = {
+  #     bucket = "logs-my-cdn.s3.amazonaws.com"
+  #   }
+
+  origin = {
+    s3_static_site = {
+      # TODO: change it to an s3 variable
+      domain_name = "janice-zhong.s3-website-ap-southeast-2.amazonaws.com"
+      custom_origin_config = {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "match-viewer"
+        origin_ssl_protocols   = ["TLSv1.2"]
+      }
+    }
+  }
+
+  default_cache_behavior = {
+    target_origin_id       = "s3_static_site"
+    viewer_protocol_policy = "allow-all"
+
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    cached_methods  = ["GET", "HEAD"]
+    compress        = true
+    query_string    = true
+  }
+
+  ordered_cache_behavior = [
+    {
+      path_pattern           = "*"
+      target_origin_id       = "s3_static_site"
+      viewer_protocol_policy = "redirect-to-https"
+
+      allowed_methods = ["GET", "HEAD", "OPTIONS"]
+      cached_methods  = ["GET", "HEAD"]
+      compress        = true
+      query_string    = true
+    }
+  ]
+
+  viewer_certificate = {
+    acm_certificate_arn = "arn:aws:acm:us-east-1:077437902719:certificate/a92c8ee0-dafe-4535-a720-a6fb21ae69d0"
+    ssl_support_method  = "sni-only"
   }
 }
