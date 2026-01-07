@@ -70,6 +70,11 @@ resource "aws_s3_bucket_website_configuration" "janice-zhong-website" {
   }
 }
 
+// use managed caching policy to avoid legacy settings 
+// which prevents you from using a free plan
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
 
 module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
@@ -77,7 +82,6 @@ module "cloudfront" {
 
 
   aliases = ["janice-zhong.com"]
-  #   comment = "My awesome CloudFront"
 
   origin_access_control = {
     s3_oac = {
@@ -108,26 +112,14 @@ module "cloudfront" {
 
   default_cache_behavior = {
     target_origin_id       = "s3_static_site"
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
 
-    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods = ["GET", "HEAD"]
     cached_methods  = ["GET", "HEAD"]
     compress        = true
-    query_string    = true
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
-
-  ordered_cache_behavior = [
-    {
-      path_pattern           = "*"
-      target_origin_id       = "s3_static_site"
-      viewer_protocol_policy = "redirect-to-https"
-
-      allowed_methods = ["GET", "HEAD", "OPTIONS"]
-      cached_methods  = ["GET", "HEAD"]
-      compress        = true
-      query_string    = true
-    }
-  ]
 
   viewer_certificate = {
     acm_certificate_arn = "arn:aws:acm:us-east-1:077437902719:certificate/a92c8ee0-dafe-4535-a720-a6fb21ae69d0"
