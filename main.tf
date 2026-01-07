@@ -83,14 +83,8 @@ module "cloudfront" {
 
   aliases = ["janice-zhong.com"]
 
-  origin_access_control = {
-    s3_oac = {
-      description      = "CloudFront access to S3"
-      origin_type      = "s3"
-      signing_behavior = "always"
-      signing_protocol = "sigv4"
-    }
-  }
+ # explicitly set it to prevent `t apply` errors
+  web_acl_id = "arn:aws:wafv2:us-east-1:077437902719:global/webacl/CreatedByCloudFront-52c77c23/20434394-6259-4c4d-a54c-9ee46d7c0577"
 
   # TODO: set up an s3 bucket for cloudfront logs
   #   logging_config = {
@@ -103,9 +97,8 @@ module "cloudfront" {
       domain_name = "janice-zhong.s3-website-ap-southeast-2.amazonaws.com"
       custom_origin_config = {
         http_port              = 80
-        https_port             = 443
-        origin_protocol_policy = "match-viewer"
-        origin_ssl_protocols   = ["TLSv1.2"]
+        https_port =  443
+        origin_protocol_policy = "http-only"
       }
     }
   }
@@ -124,5 +117,32 @@ module "cloudfront" {
   viewer_certificate = {
     acm_certificate_arn = "arn:aws:acm:us-east-1:077437902719:certificate/a92c8ee0-dafe-4535-a720-a6fb21ae69d0"
     ssl_support_method  = "sni-only"
+  }
+
+  #TODO: add tags
+}
+
+# Route53 records for CloudFront
+resource "aws_route53_record" "cloudfront_a_record" {
+  zone_id = "Z04471721VKE0KNBKW8MR"
+  name    = "janice-zhong.com"
+  type    = "A"
+
+  alias {
+    name                   = module.cloudfront.cloudfront_distribution_domain_name
+    zone_id                = module.cloudfront.cloudfront_distribution_hosted_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "cloudfront_aaaa_record" {
+  zone_id = "Z04471721VKE0KNBKW8MR"
+  name    = "janice-zhong.com"
+  type    = "AAAA"
+
+  alias {
+    name                   = module.cloudfront.cloudfront_distribution_domain_name
+    zone_id                = module.cloudfront.cloudfront_distribution_hosted_zone_id
+    evaluate_target_health = true
   }
 }
