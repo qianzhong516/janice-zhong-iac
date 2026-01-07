@@ -8,6 +8,7 @@ terraform {
     }
   }
 
+  # TODO: iac the backend s3 bucket
   backend "s3" {
     bucket       = "janice-zhong-terraform"
     key          = "terraform.state"
@@ -17,17 +18,18 @@ terraform {
 
 provider "aws" {}
 
-resource "aws_s3_bucket" "janice-zhong-bucket" {
-  bucket = "janice-zhong"
+locals {
+  full_domain = format("%s.%s", var.bucket_name, var.domain_suffix)
+}
 
-  tags = {
-    Name    = "Janice Zhong Resume"
-    Project = "janice-zhong-resume"
-  }
+resource "aws_s3_bucket" "resume_bucket" {
+  bucket = var.bucket_name
+
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_public_access_block" "unblock_bucket_public_access" {
-  bucket = aws_s3_bucket.janice-zhong-bucket.id
+  bucket = aws_s3_bucket.resume_bucket.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -36,7 +38,7 @@ resource "aws_s3_bucket_public_access_block" "unblock_bucket_public_access" {
 }
 
 resource "aws_s3_bucket_policy" "allow_public_views" {
-  bucket     = aws_s3_bucket.janice-zhong-bucket.id
+  bucket     = aws_s3_bucket.resume_bucket.id
   policy     = data.aws_iam_policy_document.allow_public_views.json
   depends_on = [aws_s3_bucket_public_access_block.unblock_bucket_public_access]
 }
@@ -53,13 +55,13 @@ data "aws_iam_policy_document" "allow_public_views" {
     ]
 
     resources = [
-      "${aws_s3_bucket.janice-zhong-bucket.arn}/*",
+      "${aws_s3_bucket.resume_bucket.arn}/*",
     ]
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "janice-zhong-website" {
-  bucket = aws_s3_bucket.janice-zhong-bucket.id
+resource "aws_s3_bucket_website_configuration" "resume_website" {
+  bucket = aws_s3_bucket.resume_bucket.id
 
   index_document {
     suffix = "index.html"
@@ -81,23 +83,22 @@ module "cloudfront" {
   version = "6.2.0"
 
 
-  aliases = ["janice-zhong.com"]
+  aliases = [local.full_domain]
 
- # explicitly set it to prevent `t apply` errors
+  # explicitly set it to prevent `t apply` errors
   web_acl_id = "arn:aws:wafv2:us-east-1:077437902719:global/webacl/CreatedByCloudFront-52c77c23/20434394-6259-4c4d-a54c-9ee46d7c0577"
 
-  # TODO: set up an s3 bucket for cloudfront logs
+  # TODO: iac an s3 bucket for cloudfront logs
   #   logging_config = {
   #     bucket = "logs-my-cdn.s3.amazonaws.com"
   #   }
 
   origin = {
     s3_static_site = {
-      # TODO: change it to an s3 variable
-      domain_name = "janice-zhong.s3-website-ap-southeast-2.amazonaws.com"
+      domain_name = aws_s3_bucket_website_configuration.resume_website.website_endpoint
       custom_origin_config = {
         http_port              = 80
-        https_port =  443
+        https_port             = 443
         origin_protocol_policy = "http-only"
       }
     }
@@ -111,21 +112,28 @@ module "cloudfront" {
     cached_methods  = ["GET", "HEAD"]
     compress        = true
 
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
   viewer_certificate = {
+    # TODO: iac the cert
     acm_certificate_arn = "arn:aws:acm:us-east-1:077437902719:certificate/a92c8ee0-dafe-4535-a720-a6fb21ae69d0"
     ssl_support_method  = "sni-only"
   }
 
-  #TODO: add tags
+  tags = var.tags
+}
+
+# Fetch the domain's zone id
+data "aws_route53_zone" "primary" {
+  name         = local.full_domain
+  private_zone = false
 }
 
 # Route53 records for CloudFront
 resource "aws_route53_record" "cloudfront_a_record" {
-  zone_id = "Z04471721VKE0KNBKW8MR"
-  name    = "janice-zhong.com"
+  zone_id = data.aws_route53_zone.primary.zone_id
+  name    = local.full_domain
   type    = "A"
 
   alias {
@@ -136,8 +144,8 @@ resource "aws_route53_record" "cloudfront_a_record" {
 }
 
 resource "aws_route53_record" "cloudfront_aaaa_record" {
-  zone_id = "Z04471721VKE0KNBKW8MR"
-  name    = "janice-zhong.com"
+  zone_id = data.aws_route53_zone.primary.zone_id
+  name    = local.full_domain
   type    = "AAAA"
 
   alias {
