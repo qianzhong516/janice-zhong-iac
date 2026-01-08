@@ -21,8 +21,7 @@ data "aws_iam_policy_document" "allow_ddb_writes" {
   statement {
     effect    = "Allow"
     actions   = ["dynamodb:UpdateItem"]
-    # TODO: change to a variable
-    resources = ["arn:aws:dynamodb:ap-southeast-2:077437902719:table/visits"]
+    resources = [aws_dynamodb_table.visits.arn]
   }
 }
 
@@ -71,8 +70,7 @@ data "aws_iam_policy_document" "allow_ddb_reads" {
   statement {
     effect    = "Allow"
     actions   = ["dynamodb:GetItem"]
-    # TODO: change to a variable
-    resources = ["arn:aws:dynamodb:ap-southeast-2:077437902719:table/visits"]
+    resources = [aws_dynamodb_table.visits.arn]
   }
 }
 
