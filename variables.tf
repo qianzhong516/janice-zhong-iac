@@ -18,3 +18,7 @@ variable "tags" {
     Project = "cloud-resume-challenge"
   }
 }
+
+locals {
+  full_domain = format("%s.%s", var.bucket_name, var.domain_suffix)
+}
