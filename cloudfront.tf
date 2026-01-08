@@ -42,8 +42,7 @@ module "cloudfront" {
   }
 
   viewer_certificate = {
-    # TODO: iac the cert
-    acm_certificate_arn = "arn:aws:acm:us-east-1:077437902719:certificate/a92c8ee0-dafe-4535-a720-a6fb21ae69d0"
+    acm_certificate_arn = aws_acm_certificate.us_cert.arn
     ssl_support_method  = "sni-only"
   }
 

@@ -12,11 +12,10 @@ resource "aws_apigatewayv2_api" "visits" {
 
 // Custom domain
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.janice-zhong.com"
+  domain_name = "api.${local.full_domain}"
 
   domain_name_configuration {
-    // TODO: to change
-    certificate_arn = "arn:aws:acm:ap-southeast-2:077437902719:certificate/adaa047b-b03a-4cc7-bee8-fabe0a9ec18d"
+    certificate_arn = aws_acm_certificate.syd_cert.arn
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
