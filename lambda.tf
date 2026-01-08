@@ -60,6 +60,15 @@ resource "aws_lambda_function" "increment_visits" {
   tags = var.tags
 }
 
+// Allow API Gateway to invoke this function
+resource "aws_lambda_permission" "allow_apigw_invoke_increment_visits" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  function_name = aws_lambda_function.increment_visits.arn
+  source_arn    = "${aws_apigatewayv2_api.visits.execution_arn}/*/PUT/visits"
+}
+
 // Lambda function: getVisits()
 resource "aws_iam_role" "lambda_execution_role_get_visits" {
   name               = "lambda_execution_role_get_visits"
@@ -105,4 +114,13 @@ resource "aws_lambda_function" "get_visits" {
   runtime = "nodejs20.x"
 
   tags = var.tags
+}
+
+// Allow API Gateway to invoke this function
+resource "aws_lambda_permission" "allow_apigw_invoke_get_visits" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  function_name = aws_lambda_function.get_visits.arn
+  source_arn    = "${aws_apigatewayv2_api.visits.execution_arn}/*/GET/visits"
 }
