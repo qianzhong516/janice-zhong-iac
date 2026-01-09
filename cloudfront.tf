@@ -12,7 +12,7 @@ module "cloudfront" {
   aliases = [local.full_domain]
 
   # explicitly set it to prevent `t apply` errors
-  web_acl_id = "arn:aws:wafv2:us-east-1:077437902719:global/webacl/CreatedByCloudFront-52c77c23/20434394-6259-4c4d-a54c-9ee46d7c0577"
+  # web_acl_id = ""
 
   # TODO: iac an s3 bucket for cloudfront logs
   #   logging_config = {
