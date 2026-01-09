@@ -7,6 +7,16 @@ terraform {
       version = "6.27.0"
     }
   }
+
+  # HCP terraform CLI integration
+  cloud {
+    organization = "janice-zhong"
+
+    workspaces {
+      project = "AWS"
+      name    = "janice-zhong-iac-prod"
+    }
+  }
 }
 
 provider "aws" {

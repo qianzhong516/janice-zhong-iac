@@ -6,9 +6,9 @@ data "aws_route53_zone" "primary" {
 
 # Route53 records for CloudFront
 resource "aws_route53_record" "cloudfront_a_record" {
-  zone_id = data.aws_route53_zone.primary.zone_id
-  name    = local.full_domain
-  type    = "A"
+  zone_id         = data.aws_route53_zone.primary.zone_id
+  name            = local.full_domain
+  type            = "A"
   allow_overwrite = true
 
   alias {
@@ -19,9 +19,9 @@ resource "aws_route53_record" "cloudfront_a_record" {
 }
 
 resource "aws_route53_record" "cloudfront_aaaa_record" {
-  zone_id = data.aws_route53_zone.primary.zone_id
-  name    = local.full_domain
-  type    = "AAAA"
+  zone_id         = data.aws_route53_zone.primary.zone_id
+  name            = local.full_domain
+  type            = "AAAA"
   allow_overwrite = true
 
   alias {
@@ -33,9 +33,9 @@ resource "aws_route53_record" "cloudfront_aaaa_record" {
 
 // Route53 records for API Gateway
 resource "aws_route53_record" "api_a_record" {
-  name    = aws_apigatewayv2_domain_name.api.domain_name
-  type    = "A"
-  zone_id = data.aws_route53_zone.primary.zone_id
+  name            = aws_apigatewayv2_domain_name.api.domain_name
+  type            = "A"
+  zone_id         = data.aws_route53_zone.primary.zone_id
   allow_overwrite = true
 
   alias {
@@ -46,9 +46,9 @@ resource "aws_route53_record" "api_a_record" {
 }
 
 resource "aws_route53_record" "api_aaaa_record" {
-  name    = aws_apigatewayv2_domain_name.api.domain_name
-  type    = "AAAA"
-  zone_id = data.aws_route53_zone.primary.zone_id
+  name            = aws_apigatewayv2_domain_name.api.domain_name
+  type            = "AAAA"
+  zone_id         = data.aws_route53_zone.primary.zone_id
   allow_overwrite = true
 
   alias {

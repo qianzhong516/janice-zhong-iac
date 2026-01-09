@@ -3,7 +3,7 @@ resource "aws_apigatewayv2_api" "visits" {
   protocol_type = "HTTP"
 
   cors_configuration {
-    allow_origins = ["http://localhost:3000", "https://janice-zhong.com"]
+    allow_origins = ["https://${local.full_domain}"]
     allow_methods = ["GET", "PUT"]
     allow_headers = ["content-type", "authorization"]
     max_age       = 3600

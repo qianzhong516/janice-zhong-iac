@@ -6,6 +6,10 @@ variable "domain_suffix" {
   type = string
 }
 
+variable "web_acl_id" {
+  type = string
+}
+
 variable "tags" {
   type = object({
     Project = string

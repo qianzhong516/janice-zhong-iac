@@ -8,11 +8,9 @@ module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
   version = "6.2.0"
 
-
   aliases = [local.full_domain]
 
-  # explicitly set it to prevent `t apply` errors
-  # web_acl_id = ""
+  web_acl_id = var.web_acl_id
 
   # TODO: iac an s3 bucket for cloudfront logs
   #   logging_config = {
