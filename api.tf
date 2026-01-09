@@ -1,5 +1,5 @@
 resource "aws_apigatewayv2_api" "visits" {
-  name          = "visits-http-api"
+  name          = "visits"
   protocol_type = "HTTP"
 
   cors_configuration {
