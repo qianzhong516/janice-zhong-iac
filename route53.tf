@@ -9,6 +9,7 @@ resource "aws_route53_record" "cloudfront_a_record" {
   zone_id = data.aws_route53_zone.primary.zone_id
   name    = local.full_domain
   type    = "A"
+  allow_overwrite = true
 
   alias {
     name                   = module.cloudfront.cloudfront_distribution_domain_name
@@ -21,6 +22,7 @@ resource "aws_route53_record" "cloudfront_aaaa_record" {
   zone_id = data.aws_route53_zone.primary.zone_id
   name    = local.full_domain
   type    = "AAAA"
+  allow_overwrite = true
 
   alias {
     name                   = module.cloudfront.cloudfront_distribution_domain_name
@@ -34,6 +36,7 @@ resource "aws_route53_record" "api_a_record" {
   name    = aws_apigatewayv2_domain_name.api.domain_name
   type    = "A"
   zone_id = data.aws_route53_zone.primary.zone_id
+  allow_overwrite = true
 
   alias {
     name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
@@ -46,6 +49,7 @@ resource "aws_route53_record" "api_aaaa_record" {
   name    = aws_apigatewayv2_domain_name.api.domain_name
   type    = "AAAA"
   zone_id = data.aws_route53_zone.primary.zone_id
+  allow_overwrite = true
 
   alias {
     name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
