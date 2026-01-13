@@ -17,7 +17,7 @@ export const handler = async (event, context) => {
   );
 
   console.log({
-    message: "User visit recorded"
+    message: "User visit recorded",
     level: "info",
     requestId: context.awsRequestId,
     date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
