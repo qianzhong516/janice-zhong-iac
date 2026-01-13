@@ -57,6 +57,10 @@ resource "aws_lambda_function" "increment_visits" {
 
   runtime = "nodejs20.x"
 
+  logging_config {
+    log_format = "JSON"
+  }
+
   tags = var.tags
 }
 
@@ -112,6 +116,10 @@ resource "aws_lambda_function" "get_visits" {
   code_sha256   = data.archive_file.get_visits.output_base64sha256
 
   runtime = "nodejs20.x"
+
+  logging_config {
+    log_format = "JSON"
+  }
 
   tags = var.tags
 }
