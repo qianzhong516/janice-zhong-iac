@@ -8,7 +8,7 @@ module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
   version = "6.2.0"
 
-  aliases = [local.full_domain]
+  aliases = [local.domain_name]
 
   web_acl_id = var.web_acl_id
 

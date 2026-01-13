@@ -3,7 +3,7 @@ resource "aws_apigatewayv2_api" "visits" {
   protocol_type = "HTTP"
 
   cors_configuration {
-    allow_origins = ["https://${local.full_domain}"]
+    allow_origins = ["https://${local.domain_name}"]
     allow_methods = ["GET", "PUT", "OPTIONS"]
     allow_headers = ["content-type", "authorization"]
     max_age       = 3600
@@ -12,7 +12,7 @@ resource "aws_apigatewayv2_api" "visits" {
 
 // Custom domain
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.${local.full_domain}"
+  domain_name = local.api_domain_name
 
   domain_name_configuration {
     certificate_arn = aws_acm_certificate.syd_cert.arn

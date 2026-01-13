@@ -14,7 +14,6 @@ terraform {
 
     workspaces {
       project = "AWS"
-      name    = "janice-zhong-iac-prod"
     }
   }
 }

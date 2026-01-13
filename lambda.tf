@@ -50,7 +50,7 @@ data "archive_file" "increment_visits" {
 # Lambda function
 resource "aws_lambda_function" "increment_visits" {
   filename      = data.archive_file.increment_visits.output_path
-  function_name = "incrementVisits"
+  function_name = "incrementVisits-${var.env}"
   role          = aws_iam_role.lambda_execution_role_increment_visits.arn
   handler       = "index.handler"
   code_sha256   = data.archive_file.increment_visits.output_base64sha256
@@ -64,6 +64,7 @@ resource "aws_lambda_function" "increment_visits" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.visits.name
+      ENV = var.env
     }
   }
 
@@ -116,7 +117,7 @@ data "archive_file" "get_visits" {
 
 resource "aws_lambda_function" "get_visits" {
   filename      = data.archive_file.get_visits.output_path
-  function_name = "getVisits"
+  function_name = "getVisits-${var.env}"
   role          = aws_iam_role.lambda_execution_role_get_visits.arn
   handler       = "index.handler"
   code_sha256   = data.archive_file.get_visits.output_base64sha256
@@ -130,6 +131,7 @@ resource "aws_lambda_function" "get_visits" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.visits.name
+      ENV = var.env
     }
   }
 

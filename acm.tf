@@ -1,8 +1,8 @@
 // create the cert for CloudFront
 resource "aws_acm_certificate" "us_cert" {
   provider                  = aws.us_east_1
-  domain_name               = local.full_domain
-  subject_alternative_names = ["*.${local.full_domain}"]
+  domain_name               = local.domain_name
+  subject_alternative_names = ["*.${local.domain_name}"]
   validation_method         = "DNS"
 
   lifecycle {
@@ -20,7 +20,7 @@ resource "aws_acm_certificate_validation" "us_cert_validation" {
 
 // create the cert for API Gateway
 resource "aws_acm_certificate" "syd_cert" {
-  domain_name       = "api.${local.full_domain}"
+  domain_name       = local.api_domain_name
   validation_method = "DNS"
 
   lifecycle {

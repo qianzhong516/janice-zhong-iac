@@ -1,8 +1,8 @@
-variable "bucket_name" {
+variable "env" {
   type = string
 }
 
-variable "domain_suffix" {
+variable "bucket_name" {
   type = string
 }
 
@@ -10,15 +10,26 @@ variable "web_acl_id" {
   type = string
 }
 
+variable "route53_domain" {
+  type = string
+}
+
 variable "tags" {
   type = object({
     Project = string
+    Environment = string
   })
-  default = {
-    Project = "cloud-resume-challenge"
-  }
+}
+
+# settings based on env
+variable "settings" {
+  type = map(object({
+    domain_name=string
+    api_domain_name = string
+  }))
 }
 
 locals {
-  full_domain = format("%s.%s", var.bucket_name, var.domain_suffix)
+  domain_name = var.settings[var.env].domain_name
+  api_domain_name = var.settings[var.env].api_domain_name
 }

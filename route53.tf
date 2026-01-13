@@ -1,13 +1,13 @@
 # Fetch the domain's zone id
 data "aws_route53_zone" "primary" {
-  name         = local.full_domain
+  name         = var.route53_domain
   private_zone = false
 }
 
 # Route53 records for CloudFront
 resource "aws_route53_record" "cloudfront_a_record" {
   zone_id         = data.aws_route53_zone.primary.zone_id
-  name            = local.full_domain
+  name            = local.domain_name
   type            = "A"
   allow_overwrite = true
 
@@ -20,7 +20,7 @@ resource "aws_route53_record" "cloudfront_a_record" {
 
 resource "aws_route53_record" "cloudfront_aaaa_record" {
   zone_id         = data.aws_route53_zone.primary.zone_id
-  name            = local.full_domain
+  name            = local.domain_name
   type            = "AAAA"
   allow_overwrite = true
 
