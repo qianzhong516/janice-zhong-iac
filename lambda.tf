@@ -61,6 +61,12 @@ resource "aws_lambda_function" "increment_visits" {
     log_format = "JSON"
   }
 
+  environment {
+    variables = {
+      TABLE_NAME = aws_dynamodb_table.visits.name
+    }
+  }
+
   tags = var.tags
 }
 
@@ -119,6 +125,12 @@ resource "aws_lambda_function" "get_visits" {
 
   logging_config {
     log_format = "JSON"
+  }
+
+  environment {
+    variables = {
+      TABLE_NAME = aws_dynamodb_table.visits.name
+    }
   }
 
   tags = var.tags

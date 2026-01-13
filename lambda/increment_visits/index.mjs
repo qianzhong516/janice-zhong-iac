@@ -1,11 +1,12 @@
 import { DynamoDBClient, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 const client = new DynamoDBClient();
+const TABLE_NAME = process.env.TABLE_NAME;
 
 export const handler = async (event, context) => {
   await client.send(
     new UpdateItemCommand({
-      TableName: "visits",
+      TableName: TABLE_NAME,
       Key: {
         id: { S: "1" },
       },

@@ -1,11 +1,12 @@
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 
 const client = new DynamoDBClient();
+const TABLE_NAME = process.env.TABLE_NAME;
 
 export const handler = async () => {
   const res = await client.send(
     new GetItemCommand({
-      TableName: "visits",
+      TableName: TABLE_NAME,
       Key: {
         id: { S: "1" },
       },
