@@ -26,3 +26,11 @@ provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
 }
+
+provider "aws" {
+  alias  = "dns"
+  region = "us-east-1"
+  assume_role {
+    role_arn = "arn:aws:iam::077437902719:role/AllowCrossAccountRoute53Changes"
+  }
+}
