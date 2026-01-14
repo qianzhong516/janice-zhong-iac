@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "lambda_execution_role_increment_visits" {
-  name               = "lambda_execution_role_increment_visits"
+  name               = "lambda_execution_role_increment_visits_${var.env}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "allow_ddb_writes" {
 }
 
 resource "aws_iam_policy" "allow_ddb_writes" {
-  name   = "allow_ddb_writes"
+  name   = "allow_ddb_writes_${var.env}"
   policy = data.aws_iam_policy_document.allow_ddb_writes.json
 }
 
@@ -82,7 +82,7 @@ resource "aws_lambda_permission" "allow_apigw_invoke_increment_visits" {
 
 // Lambda function: getVisits()
 resource "aws_iam_role" "lambda_execution_role_get_visits" {
-  name               = "lambda_execution_role_get_visits"
+  name               = "lambda_execution_role_get_visits_${var.env}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "allow_ddb_reads" {
 }
 
 resource "aws_iam_policy" "allow_ddb_reads" {
-  name   = "allow_ddb_reads"
+  name   = "allow_ddb_reads_${var.env}"
   policy = data.aws_iam_policy_document.allow_ddb_reads.json
 }
 
