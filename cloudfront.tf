@@ -28,8 +28,6 @@ module "cloudfront" {
     }
   }
 
-  origin_access_control = {}
-
   default_cache_behavior = {
     target_origin_id       = "s3_static_site_${var.env}"
     viewer_protocol_policy = "redirect-to-https"
