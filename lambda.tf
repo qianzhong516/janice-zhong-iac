@@ -64,7 +64,7 @@ resource "aws_lambda_function" "increment_visits" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.visits.name
-      ENV = var.env
+      ENV        = var.env
     }
   }
 
@@ -131,7 +131,7 @@ resource "aws_lambda_function" "get_visits" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.visits.name
-      ENV = var.env
+      ENV        = var.env
     }
   }
 

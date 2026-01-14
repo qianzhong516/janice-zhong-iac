@@ -16,7 +16,7 @@ variable "route53_domain" {
 
 variable "tags" {
   type = object({
-    Project = string
+    Project     = string
     Environment = string
   })
 }
@@ -24,12 +24,12 @@ variable "tags" {
 # settings based on env
 variable "settings" {
   type = map(object({
-    domain_name=string
+    domain_name     = string
     api_domain_name = string
   }))
 }
 
 locals {
-  domain_name = var.settings[var.env].domain_name
+  domain_name     = var.settings[var.env].domain_name
   api_domain_name = var.settings[var.env].api_domain_name
 }
