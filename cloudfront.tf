@@ -29,7 +29,7 @@ module "cloudfront" {
   }
 
   default_cache_behavior = {
-    target_origin_id       = "s3_static_site_${var.env}"
+    target_origin_id       = "s3_static_site"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD"]
