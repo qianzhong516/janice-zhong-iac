@@ -10,8 +10,6 @@ module "cloudfront" {
 
   aliases = [local.domain_name]
 
-  # web_acl_id = var.web_acl_id
-
   # TODO: iac an s3 bucket for cloudfront logs
   #   logging_config = {
   #     bucket = "logs-my-cdn.s3.amazonaws.com"

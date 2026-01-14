@@ -1,13 +1,13 @@
 # Fetch the domain's zone id
 data "aws_route53_zone" "primary" {
-  provider = aws.dns
+  provider     = aws.dns
   name         = var.route53_domain
   private_zone = false
 }
 
 # Route53 records for CloudFront
 resource "aws_route53_record" "cloudfront_a_record" {
-  provider = aws.dns
+  provider        = aws.dns
   zone_id         = data.aws_route53_zone.primary.zone_id
   name            = local.domain_name
   type            = "A"
@@ -21,7 +21,7 @@ resource "aws_route53_record" "cloudfront_a_record" {
 }
 
 resource "aws_route53_record" "cloudfront_aaaa_record" {
-  provider = aws.dns
+  provider        = aws.dns
   zone_id         = data.aws_route53_zone.primary.zone_id
   name            = local.domain_name
   type            = "AAAA"
@@ -36,7 +36,7 @@ resource "aws_route53_record" "cloudfront_aaaa_record" {
 
 // Route53 records for API Gateway
 resource "aws_route53_record" "api_a_record" {
-  provider = aws.dns
+  provider        = aws.dns
   name            = aws_apigatewayv2_domain_name.api.domain_name
   type            = "A"
   zone_id         = data.aws_route53_zone.primary.zone_id
@@ -50,7 +50,7 @@ resource "aws_route53_record" "api_a_record" {
 }
 
 resource "aws_route53_record" "api_aaaa_record" {
-  provider = aws.dns
+  provider        = aws.dns
   name            = aws_apigatewayv2_domain_name.api.domain_name
   type            = "AAAA"
   zone_id         = data.aws_route53_zone.primary.zone_id

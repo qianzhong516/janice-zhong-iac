@@ -6,10 +6,6 @@ variable "bucket_name" {
   type = string
 }
 
-variable "web_acl_id" {
-  type = string
-}
-
 variable "route53_domain" {
   type = string
 }
