@@ -19,7 +19,7 @@ output "site_domain" {
 }
 
 output "api_invoke_url" {
-  value = module.api.invoke_url
+  value = aws_apigatewayv2_api.visits.api_endpoint
 }
 
 output "ddb_table_name" {
