@@ -58,3 +58,7 @@ TFC_AWS_RUN_ROLE_ARN=<role_arn>
 ## Deployment
 
 Deployments run in HCP Terraform after VCS changes are merged. Use the workspace UI to review plan and apply.
+
+## Pricing Estimation
+
+At < 100 page views/day (~3,000/month), typical monthly cost should cost close to nothing, depending on data transfer and API usage.
