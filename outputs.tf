@@ -11,7 +11,7 @@ output "site_bucket_name" {
 }
 
 output "site_website_endpoint" {
-  value = aws_s3_bucket.resume_bucket.website_endpoint
+  value = aws_s3_bucket_website_configuration.resume_website.website_endpoint
 }
 
 output "site_domain" {
@@ -19,7 +19,7 @@ output "site_domain" {
 }
 
 output "api_invoke_url" {
-  value = aws_apigatewayv2_api.visits.api_endpoint
+  value = aws_route53_record.api_a_record.fqdn
 }
 
 output "ddb_table_name" {
