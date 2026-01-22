@@ -55,7 +55,7 @@ resource "aws_lambda_function" "increment_visits" {
   handler       = "index.handler"
   code_sha256   = data.archive_file.increment_visits.output_base64sha256
 
-  runtime = "nodejs20.x"
+  runtime = "nodejs24.x"
 
   logging_config {
     log_format = "JSON"
@@ -122,7 +122,7 @@ resource "aws_lambda_function" "get_visits" {
   handler       = "index.handler"
   code_sha256   = data.archive_file.get_visits.output_base64sha256
 
-  runtime = "nodejs20.x"
+  runtime = "nodejs24.x"
 
   logging_config {
     log_format = "JSON"
