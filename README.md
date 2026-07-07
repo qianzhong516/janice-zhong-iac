@@ -1,12 +1,34 @@
-# My Resume IaC
+# Serverless Portfolio IaC
 
-Terraform infrastructure for a resume website with a page view counter on AWS.
+This repo is the IaC part of [Serverless Portfolio](https://github.com/qianzhong516/serverless-portfolio). This project demonstrates a production-style serverless deployment on AWS featuring Infrastructure as Code, CI/CD, multi-environment deployment.
+
+## Table of Contents
+
+- [Technologies](#technologies)
+- [Architecture](#architecture)
+- [CI/CD](#cicd)
+- [Multi-environment Deployment](#multi-environment-deployment)
+- [Repo Layout](#repo-layout)
+- [Deployment Flow](#deployment-flow)
+
+## Technologies
+
+- Terraform
+- HCP Terraform
+- AWS IAM
+- Amazon S3
+- CloudFront
+- API Gateway
+- Lambda
+- DynamoDB
+- Route53
+- ACM
 
 ## Architecture
 
-- `janice-zhong.com` resolves to a CloudFront distribution backed by an S3 static website bucket.
-- The site calls an HTTP API Gateway, which invokes Lambda to read/write a DynamoDB counter.
-- TLS: ACM cert in `us-east-1` for CloudFront and in `ap-southeast-2` for API Gateway.
+- Infrastructure is organized into logical Terraform files by AWS service.
+- Environment-specific configurations are managed by Terraform workspaces.
+- State is managed remotely by HCP Terraform.
 
 ```mermaid
 flowchart TD
@@ -27,38 +49,59 @@ flowchart TD
     DynamoDB --> Lambda
 ```
 
-## Prerequisites
+## CI/CD
 
-- Terraform >= 1.14.3
-- HCP Terraform connected via VCS; this repo is the source of truth.
+"Pushes to main" will trigger a `terraform plan` execution in HCP Terraform. Manual approvals are required to run `terraform apply`.
 
-## AWS Authentication
+HCP Terraform authenticates to AWS using OpenID Connect (OIDC), eliminating the need for long-lived AWS credentials.
 
-HCP Terraform uses OIDC to assume an AWS role. These environment variables are set in HCP Terraform:
+## Multi-environment Deployment
 
-```bash
-TFC_AWS_PROVIDER_AUTH=true
-TFC_AWS_RUN_ROLE_ARN=<role_arn>
-```
-
-## Environments
-
-- Staging and production workspaces.
-- Manual approvals required for `terraform apply` in both.
+Separate Terraform workspaces isolate staging and production while allowing both environments to share the same Terraform configuration.
 
 ## Repo Layout
 
-- `main.tf` core resources and provider config
-- `webfront.tf` S3 + CloudFront
-- `api.tf` + `lambda.tf` API Gateway and Lambda
-- `dynamodb.tf` visit counter storage
-- `route53.tf` DNS and records
-- `acm.tf` TLS certificates
+```
+.
+├── acm.tf          # TLS certificates
+├── api.tf          # API Gateway
+├── dynamodb.tf     # Visitor counter storage
+├── lambda.tf       # Lambda function
+├── route53.tf      # DNS
+├── webfront.tf     # S3 + CloudFront
+├── variables.tf
+├── outputs.tf
+└── main.tf         # Core resources and provider config
+```
 
-## Deployment
+## Deployment Flow
 
-Deployments run in HCP Terraform after VCS changes are merged. Use the workspace UI to review plan and apply.
-
-## Pricing Estimation
-
-At < 100 page views/day (~3,000/month), typical monthly cost should cost close to nothing, depending on data transfer and API usage.
+```
+Developer
+    │
+    │ git push main
+    ▼
+GitHub Repository
+    │
+    │ VCS integration
+    ▼
+HCP Terraform
+    │
+    ├── terraform plan
+    │
+    ▼
+Manual Approval
+    │
+    ▼
+terraform apply
+    │
+    ▼
+AWS Infrastructure
+ ├── S3
+ ├── CloudFront
+ ├── API Gateway
+ ├── Lambda
+ ├── DynamoDB
+ ├── Route53
+ └── ACM
+```
