@@ -1,6 +1,6 @@
 # Serverless Portfolio IaC
 
-This repo is the IaC part of [Serverless Portfolio](https://github.com/qianzhong516/serverless-portfolio). This project demonstrates a production-style serverless deployment on AWS featuring Infrastructure as Code, CI/CD, multi-environment deployment.
+This repository contains the Infrastructure as Code (IaC) for the [Serverless Portfolio](https://github.com/qianzhong516/serverless-portfolio). It provisions and manages the AWS infrastructure using Terraform and HCP Terraform, supporting automated infrastructure deployments and separate staging and production environments.
 
 ## Table of Contents
 
